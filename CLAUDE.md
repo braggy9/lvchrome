@@ -4,7 +4,12 @@
 
 A small, reversible Chrome extension prototype for work: dependable return to four core tabs (Gmail, Calendar, one Matters Sheet, one Mission Control Doc) in Tom's standard Chrome profile on macOS. Habitat stays in its own ordinary Chrome workflow and is never touched.
 
-Spec: `SPEC.md`. Test record: `TEST-LOG.md`.
+Spec and decisions: `SPEC.md`. Test record: `TEST-LOG.md`. Load `extension/` unpacked.
+
+## Commands
+
+- `npm test` — URL-matching unit tests (Node built-in runner)
+- `npm run e2e` — Playwright + xvfb run with fake Google pages; update the *Automated results* table in `TEST-LOG.md` after changes
 
 ## Mandatory Rules
 

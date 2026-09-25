@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en-AU">
+<head><meta charset="utf-8"><title>Core work tabs</title><link rel="stylesheet" href="ui.css">
+<style>body{width:320px;padding:12px}</style></head>
+<body>
+  <h1>Core work tabs</h1>
+  <div id="rows"></div>
+  <h2>Work window</h2>
+  <div class="row"><span class="name" id="work">—</span><button id="setWork">Use this window</button></div>
+  <label><input type="checkbox" id="route"> Send links from core tabs to the work window</label>
+  <h2>Testing</h2>
+  <div class="row"><span class="name muted" id="diagMsg">Copies status and event log (no URLs).</span><button id="diag">Copy diagnostics</button></div>
+  <p class="muted"><a href="#" id="opts">Settings</a> · <a href="#" id="keys">Shortcuts</a></p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
