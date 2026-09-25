@@ -1,0 +1,4 @@
+# Real tab identifiers (Sheet/Doc IDs, Google account index) stay local
+config.local.json
+.DS_Store
+node_modules/
