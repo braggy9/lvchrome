@@ -41,6 +41,8 @@ Repeat steps 3–6 in the live profile.
 
 ## Mac test script
 
+**Easier route:** get Claude Code on the Mac to run this for you. See `MAC-RUN.md`. The table below is the manual fallback.
+
 Do these in order, and stop at any fail. After each one, click the lvchrome icon → **Copy diagnostics** and paste the result into the chat along with pass or fail.
 
 | ID | Do this | Pass if |
@@ -68,5 +70,6 @@ Do these in order, and stop at any fail. After each one, click the lvchrome icon
 - `extension/` is the folder to load. It's plain Manifest V3 JavaScript with no build step.
 - `npm test`: unit tests for URL matching (Node, no dependencies).
 - `npm run e2e`: automated run in Linux Chromium with fake Google pages. Needs Playwright and `xvfb-run`.
+- `npm run e2e:mac`: the same suite on macOS, no xvfb. Run `npm install && npx playwright install chromium` first.
 - Optional local seed: copy `extension/config.example.json` to `extension/config.local.json` (gitignored). It's read once on first install if no settings exist.
 - Only four shortcuts are pre-bound. Chrome allows at most four suggested shortcuts per extension, so the popup deliberately has none. You can add more in `chrome://extensions/shortcuts`.
