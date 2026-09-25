@@ -1,0 +1,9 @@
+{
+  "name": "lvchrome",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/core.test.mjs",
+    "e2e": "xvfb-run -a node tests/e2e.mjs"
+  }
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en-AU">
+<head><meta charset="utf-8"><title>lvchrome settings</title><link rel="stylesheet" href="ui.css">
+<style>body{max-width:520px;padding:24px}</style></head>
+<body>
+  <h1>lvchrome settings</h1>
+  <p class="muted">Stored only in this Chrome profile. Nothing is sent anywhere.</p>
+
+  <label>Work Google account index (the <code>N</code> in <code>/u/N/</code>)
+    <input type="number" id="accountIndex" min="0" step="1"></label>
+  <p class="muted" id="accounts"></p>
+
+  <label>Matters Sheet — file ID or full link
+    <input type="text" id="mattersSheetId" placeholder="https://docs.google.com/spreadsheets/d/…"></label>
+  <label>Mission Control Doc — file ID or full link
+    <input type="text" id="missionControlDocId" placeholder="https://docs.google.com/document/d/…"></label>
+
+  <label><input type="checkbox" id="routeLinks"> Send links opened from core tabs to a separate work window</label>
+  <label><input type="checkbox" id="keepLoaded"> Ask Chrome not to unload core tabs automatically (Memory Saver)</label>
+
+  <p><button class="primary" id="save">Save</button> <span class="muted" id="msg"></span></p>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
