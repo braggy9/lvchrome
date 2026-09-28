@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "lvchrome — core work tabs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Return to four core work tabs without reloading them, and route links opened from them to a separate work window.",
   "permissions": ["tabs", "storage"],
   "background": { "service_worker": "background.js", "type": "module" },
@@ -16,13 +16,13 @@
       "suggested_key": { "default": "Alt+Shift+2" },
       "description": "Go to Calendar"
     },
-    "focus-matters": {
-      "suggested_key": { "default": "Alt+Shift+3" },
-      "description": "Go to Matters Sheet"
-    },
     "focus-mission": {
-      "suggested_key": { "default": "Alt+Shift+4" },
+      "suggested_key": { "default": "Alt+Shift+3" },
       "description": "Go to Mission Control Doc"
+    },
+    "focus-matters": {
+      "suggested_key": { "default": "Alt+Shift+4" },
+      "description": "Go to Matters Sheet"
     }
   }
 }
