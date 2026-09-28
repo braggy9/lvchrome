@@ -2,13 +2,14 @@
 
 A small, reversible Chrome extension for getting back to four core work tabs (Gmail, Calendar, the Matters Sheet and the Mission Control Doc) without reloading them. Links opened from those tabs go to a separate work window.
 
-**Status:** prototype 0.1.0. Automated checks pass in Linux Chromium with fake Google pages. **Nothing has been tested on the Mac yet.** See `TEST-LOG.md`.
+**Status:** prototype 0.1.1. First Mac run done (2026-09-28, throwaway profile). Focusing works, including across Spaces, without reloads. Shortcuts must be set by hand. Link routing is inconsistent, and Memory Saver and sleep/wake are still untested. See `TEST-LOG.md`.
 
 ## What it does
 
 | You do | It does |
 |---|---|
-| **Option+Shift+1 / 2 / 3 / 4** | Goes to Gmail / Calendar / Matters Sheet / Mission Control Doc: brings its window forward and makes it the active tab. Doesn't reload it. |
+| **Option+Shift+1 / 2 / 3 / 4** | Goes to Gmail / Calendar / Mission Control Doc / Matters Sheet: brings its window forward and makes it the active tab. Doesn't reload it. If the window is on another desktop (Space), macOS slides across to it. |
+| **Option+Shift+0** (optional) | Opens the lvchrome popup |
 | Click a link in one of those tabs that opens a new tab | Moves the new tab to a separate **work window** (created the first time) |
 | Navigate a core tab away in the same tab | Shows a red **!** on the extension icon. The popup offers **Restore**. It never blocks navigation. |
 | Press a shortcut for a core tab you closed | Reopens it in a normal (non-work) window |
@@ -25,7 +26,13 @@ It also asks Chrome not to unload the four core tabs automatically (Memory Saver
 3. In that profile go to `chrome://extensions` → switch on **Developer mode** (top right).
    - If the switch is missing or greyed out, your Chrome is managed and blocks this. That's test M0 = fail. Stop there and tell me.
 4. **Load unpacked** → choose the `extension` folder inside the unzipped folder.
-5. Click the puzzle-piece icon → pin **lvchrome**.
+5. Click the puzzle-piece icon → pin **lvchrome**. It's a grey square with an "l". The red **!** badge only shows when it's pinned.
+   - **Set the shortcuts by hand.** On Chrome 154, macOS, they were *not* set automatically (M1). Go to `chrome://extensions/shortcuts` → lvchrome, click the pencil on each row and press the keys. Leave scope as **In Chrome**. Chrome lists the rows alphabetically, so match by name:
+     - Go to Gmail: **Option+Shift+1**
+     - Go to Calendar: **Option+Shift+2**
+     - Go to Mission Control Doc: **Option+Shift+3**
+     - Go to Matters Sheet: **Option+Shift+4**
+     - Activate the extension (opens the popup): **Option+Shift+0**, optional
 6. Click the lvchrome icon → **Settings**:
    - **Work account index:** the settings page lists the numbers it can see in open Gmail tabs. Your work inbox's address bar shows `/mail/u/N/`, and N is the number.
    - Paste the full link of the **Matters Sheet** and the **Mission Control Doc**. It keeps only the ID.
@@ -48,7 +55,7 @@ Do these in order, and stop at any fail. After each one, click the lvchrome icon
 | ID | Do this | Pass if |
 |---|---|---|
 | M0 | Install steps above | The extension loads, with no red "Errors" button |
-| M1 | Open `chrome://extensions/shortcuts` | All four lvchrome shortcuts show Option+Shift+1–4, none blank |
+| M1 | Open `chrome://extensions/shortcuts` *before* setting anything by hand | All four lvchrome shortcuts show Option+Shift+1–4, none blank (failed on the first run: set them by hand, install step 5) |
 | M2 | Open the four core tabs in one window. Open another window and press each shortcut. | The right tab comes forward each time |
 | M3 | Move the core-tabs window to another Space (Mission Control → drag). From the first Space, press each shortcut. | You end up looking at the right tab. Note *how*: Space switched, window moved, or nothing happened. |
 | M4 | Scroll halfway down the Sheet and type something in a Gmail reply. Switch away and use the shortcuts back. | Same scroll position, text still there |
@@ -72,4 +79,5 @@ Do these in order, and stop at any fail. After each one, click the lvchrome icon
 - `npm run e2e`: automated run in Linux Chromium with fake Google pages. Needs Playwright and `xvfb-run`.
 - `npm run e2e:mac`: the same suite on macOS, no xvfb. Run `npm install && npx playwright install chromium` first.
 - Optional local seed: copy `extension/config.example.json` to `extension/config.local.json` (gitignored). It's read once on first install if no settings exist.
-- Only four shortcuts are pre-bound. Chrome allows at most four suggested shortcuts per extension, so the popup deliberately has none. You can add more in `chrome://extensions/shortcuts`.
+- Four shortcuts are suggested in the manifest. Chrome allows at most four suggested shortcuts per extension, so the popup has none there, but Chrome accepted Option+Shift+0 for it when set by hand. On the first Mac run, Chrome didn't apply the suggestions at all (cause unknown), so install step 5 sets them by hand.
+- `tests/mac/`: helpers used for the first Mac run by a Claude Code session on the Mac (no Node needed). `launch.sh` starts Chrome on a throwaway folder once the normal Chrome has quit, and `guard.sh` makes every helper refuse to run unless that's the only Chrome. `lv.sh` reads tab kinds (never URLs or titles), places and checks no-reload markers, presses the shortcuts, and drives the popup and Settings pages. See the *Method* section in `TEST-LOG.md`.
