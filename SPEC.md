@@ -47,5 +47,5 @@ The extension, a README with install and uninstall steps, and `TEST-LOG.md`.
 | Habitat | Excluded by design: the extension acts only on the four matched tabs and on tabs opened from them | Only at risk if Habitat is itself the work Gmail, Calendar or one of the two files |
 | Missing core tab | Reopen it in a normal, non-work window | Most useful default. The alternatives were "do nothing" or "ask". |
 | Same-tab navigation | Detect it, show a "!" badge, offer Restore to the last core URL. Never block. | Blocking risks breaking Gmail |
-| Shortcuts | Option+Shift+1–4. The popup has no shortcut. | Chrome caps suggested shortcuts at four. Leaving the popup (`_execute_action`) unbound avoids the unconfirmed question of whether it counts. |
+| Shortcuts | Option+Shift+1 Gmail, 2 Calendar, 3 Mission Control Doc, 4 Matters Sheet. The popup has no suggested shortcut; Option+Shift+0 is optional and set by hand. | Chrome caps suggested shortcuts at four. **Updated 2026-09-28 (Tom):** Doc and Sheet swapped (3 = Doc, 4 = Sheet), and Option+Shift+0 added for the popup. On the first Mac run Chrome didn't apply the suggestions (M1), so all of them are set by hand at install. |
 | Routed links | Moved to the work window, which is then focused | Revisit after M16 if background-tab Cmd+clicks feel wrong |

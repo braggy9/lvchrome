@@ -14,7 +14,8 @@ Spec and decisions: `SPEC.md`. Test record: `TEST-LOG.md`. Load `extension/` unp
 ## Mandatory Rules
 
 - Cross-project rules in braggy9/tomos-command-tower `RULES.md` apply (uncertainty, anti-flattening, no process theatre).
-- **Mac tests are run by Tom, not by an agent.** Cloud sessions are Linux and cannot test Spaces, sleep/wake or the live profile. Never mark a `TEST-LOG.md` row pass/fail without Tom's report.
+- **Mac results come only from the real Mac:** Tom by hand, or a Claude Code session running on the Mac (from 2026-09-28, at Tom's request). Each `TEST-LOG.md` row records who checked it. Cloud sessions are Linux and cannot test Spaces, sleep/wake or the live profile, so they never mark a Mac row pass or fail.
+- On the Mac, scripts drive only a throwaway Chrome profile and go through `tests/mac/guard.sh`. No screenshots, and never print URLs, titles or page content.
 - **Never change the live Chrome profile without showing the exact change and how to undo it first.**
 - **Confidentiality:** no network calls, analytics or URL logging. Store only the configured IDs, locally. Real IDs live in `config.local.json` (gitignored), never in commits.
 - If a requirement cannot be met reliably, say so before building a larger wrapper.
