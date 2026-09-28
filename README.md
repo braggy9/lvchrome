@@ -8,7 +8,7 @@ A small, reversible Chrome extension for getting back to four core work tabs (Gm
 
 | You do | It does |
 |---|---|
-| **Option+Shift+1 / 2 / 3 / 4** | Goes to Gmail / Calendar / Mission Control Doc / Matters Sheet: brings its window forward and makes it the active tab. Doesn't reload it. If the window is on another desktop (Space), macOS slides across to it. |
+| **Option+Shift+1 / 2 / 3 / 4** | Goes to Gmail / Calendar / Mission Control Doc / Matters Sheet: brings its window forward and makes it the active tab. Doesn't reload it. If the window is on another desktop (Space), macOS slides across to it (seen for 1, 3 and 4 so far; 2 not yet cleanly tested). |
 | **Option+Shift+0** (optional) | Opens the lvchrome popup |
 | Click a link in one of those tabs that opens a new tab | Moves the new tab to a separate **work window** (created the first time) |
 | Navigate a core tab away in the same tab | Shows a red **!** on the extension icon. The popup offers **Restore**. It never blocks navigation. |
