@@ -31,10 +31,19 @@ async function setSession(patch) {
   await chrome.storage.session.set(patch);
 }
 
-async function log(event, key, detail) {
-  const { log: entries } = await getSession();
-  entries.push({ t: new Date().toISOString(), event, ...(key ? { key } : {}), ...(detail ? { detail } : {}) });
-  await setSession({ log: entries.slice(-LOG_LIMIT) });
+// Appending is read-modify-write, so events arriving together could overwrite
+// each other's entries (seen on the Mac: two Calendar tabs, one "opened" entry).
+// Queue the writes. Nothing queued here may call log() itself.
+let logQueue = Promise.resolve();
+function log(event, key, detail) {
+  const write = async () => {
+    const { log: entries } = await getSession();
+    entries.push({ t: new Date().toISOString(), event, ...(key ? { key } : {}), ...(detail ? { detail } : {}) });
+    await setSession({ log: entries.slice(-LOG_LIMIT) });
+  };
+  const run = logQueue.then(write, write);
+  logQueue = run.catch(() => {});
+  return run;
 }
 
 async function tabExists(tabId) {
@@ -160,6 +169,14 @@ async function focusCore(key) {
   return { key, action: 'focused', wasDiscarded };
 }
 
+// A second request for the same key while one is running joins it, so a
+// doubled shortcut can't open a missing core tab twice.
+const focusing = {};
+function focusCoreOnce(key) {
+  if (!focusing[key]) focusing[key] = focusCore(key).finally(() => delete focusing[key]);
+  return focusing[key];
+}
+
 async function restoreCore(key) {
   const config = await getConfig();
   const s = await getSession();
@@ -200,15 +217,24 @@ async function withRetry(fn, attempts = 5) {
   }
 }
 
+// Every early return for a tab opened from a core tab is logged with its reason
+// (no URLs), so a link that wasn't routed can be explained from diagnostics.
 async function maybeRoute(tab) {
   const config = await getConfig();
-  if (!config.routeLinks || tab.openerTabId == null) return;
+  if (!config.routeLinks) return;
   const s = await getSession();
+  if (tab.openerTabId == null) {
+    // Diagnostic only: a tab with no opener appearing beside a core tab. Could be
+    // Cmd+T, or a link Chrome didn't attribute to its tab (unverified on Mac).
+    const beside = await Promise.all(Object.values(s.bindings).map(tabExists));
+    if (beside.some((t) => t && t.windowId === tab.windowId)) await log('new-tab-no-opener', null, 'in a core-tab window');
+    return;
+  }
   const openerKey = Object.keys(s.bindings).find((k) => s.bindings[k] === tab.openerTabId);
   if (!openerKey) return; // opened from Habitat or anything else: leave alone
-  if (tab.windowId === s.workWindowId) return;
-  if ((await windowType(tab.windowId)) !== 'normal') return; // Gmail pop-outs etc.
-  if (isUserNewTab(tab.pendingUrl || tab.url)) return;
+  if (tab.windowId === s.workWindowId) return log('not-routed', openerKey, 'already in work window');
+  if ((await windowType(tab.windowId)) !== 'normal') return log('not-routed', openerKey, 'popup window'); // Gmail pop-outs etc.
+  if (isUserNewTab(tab.pendingUrl || tab.url)) return log('not-routed', openerKey, 'blank or new-tab page when created');
   try {
     await withRetry(() => ensureWorkWindowFor(tab.id));
     await log('routed', openerKey);
@@ -277,7 +303,9 @@ chrome.windows.onRemoved.addListener(async (windowId) => {
 
 chrome.commands.onCommand.addListener((command) => {
   const key = command.replace(/^focus-/, '');
-  if (CORE_KEYS.includes(key)) focusCore(key);
+  if (!CORE_KEYS.includes(key)) return;
+  log('shortcut', key);
+  focusCoreOnce(key);
 });
 
 async function seedConfigFromFile() {
@@ -378,7 +406,7 @@ async function openAccountIndexes() {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const handlers = {
     status,
-    focus: () => focusCore(msg.key),
+    focus: () => focusCoreOnce(msg.key),
     restore: () => restoreCore(msg.key),
     setWorkWindow: () => setWorkWindow(msg.windowId),
     diagnostics,
