@@ -26,9 +26,12 @@ const sleep = (s) => delay(s);
 function classify(url) {
   let m;
   if ((m = /^https:\/\/mail\.google\.com\/mail\/(?:u\/(\d+))?/.exec(url))) {
-    // Gmail appends ?compose=… to the hash while a compose box is open.
-    const hash = (url.split('#')[1] || '').split('?')[0];
-    const view = /\/[A-Za-z0-9]{16,}$/.test(hash) ? 'message' : 'list';
+    // Gmail appends ?compose=… to the hash while a compose box is open. Run 2 saw
+    // an open message at #inbox?… (finding 4), so any other query is "unclear",
+    // not "list". Which parameter marks that message is unverified.
+    const [path, query = ''] = (url.split('#')[1] || '').split('?');
+    const params = query ? query.split('&').map((p) => p.split('=')[0]) : [];
+    const view = /\/[A-Za-z0-9]{16,}$/.test(path) ? 'message' : params.every((p) => p === 'compose') ? 'list' : 'unclear';
     return { kind: 'gmail', label: `gmail/u${m[1] || 0} (${view})` };
   }
   if ((m = /^https:\/\/calendar\.google\.com\/calendar\/(?:u\/(\d+))?/.exec(url))) return { kind: 'calendar', label: `calendar/u${m[1] || 0}` };
