@@ -19,15 +19,15 @@ If an agent runs it, it must be able to drive **Tom's own signed-in Chrome on hi
 
 ## Before you start
 
-- **The date has passed.** 26 Sep 2026 is now in the past. A task dated in the past may show as overdue or behave differently. Ask Tom whether to keep 26 Sep or use a future date, and record which one was used.
-- The title (`… — 26 Sep`) matches the original date. If the date changes, ask Tom whether the title changes too.
+- **Date changed.** The original request was for Sat 26 Sep 2026, which had passed by the time this brief was written. On 29 Sep 2026 Tom chose **Saturday 3 October 2026** instead, and the title changed to match. Don't use 26 Sep.
+- **Daylight saving.** Sydney switches to daylight time on Sun 4 Oct 2026 (checked against the tz database). So 3 Oct at 3:00 pm is still standard time (AEST, UTC+10), the day before the switch. If the time shows up shifted by an hour, report exactly what you see and don't correct it.
 
 ## Test values
 
 | Field | Value |
 |---|---|
-| Title | `TEST Slack capture — 26 Sep` (em dash) |
-| Date | Saturday 26 September 2026 (see above) |
+| Title | `TEST Slack capture — 3 Oct` (em dash) |
+| Date | Saturday 3 October 2026 |
 | Time | 3:00 pm, Australia/Sydney |
 | Details | `https://example.com/draft?ref=slack-test` |
 | List | Default list unless Tom says otherwise. Record which list was used |
