@@ -39,5 +39,6 @@ I think these need a person, but a local session should try first:
   - M12: a Doc link, and a Calendar link to something other than Habitat
   - M13: a half-typed draft through the M11/M12 clicks
   - M14: the "!" badge, which needs lvchrome pinned and Tom to look
-  - Helper: `lv.js` labels an open email as "list" when Gmail's address is `#inbox?…` (run 2 finding 4)
-  - Extension: it logs its own reopened tabs as `new-tab-no-opener` (run 2 finding 3)
+  - Helper: `lv.js` labelled an open email as "list" when Gmail's address is `#inbox?…` (run 2 finding 4). **Changed 29 Sep:** any query other than `compose` now reads "unclear". Not yet run on the Mac.
+  - Extension: it logged its own reopened tabs as `new-tab-no-opener` (run 2 finding 3). **Changed in 0.1.2:** for 2 s after lvchrome opens a tab itself, no-opener tabs in that window aren't logged. Press **Reload** on the lvchrome card to load it. Not yet run on the Mac.
+- **No Python either:** `python3` and `git` are only the Xcode stubs here, and calling them opens the "install developer tools" dialog. Use shell tools or JXA (`osascript -l JavaScript`).
