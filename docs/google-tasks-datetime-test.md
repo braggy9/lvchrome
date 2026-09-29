@@ -75,7 +75,7 @@ If an agent runs it, it must be able to drive **Tom's own signed-in Chrome on hi
 
 Run by a Claude Code session on the Mac, driving Tom's signed-in Chrome through the Claude in Chrome extension, at Tom's request in that session. Tom chose Sat 3 Oct, the matching title and the default list. **Not yet confirmed by Tom.**
 
-**Method, and a rule it didn't meet.** This run happened before the standing exception in `CLAUDE.md` was written. It used **screenshots** and the page's accessibility tree to find controls and read the task back, so other tasks were on screen in those screenshots. None of them is recorded here or anywhere else. The exception now forbids screenshots. A no-screenshot re-read at about 12:20 couldn't see the task: Google Tasks doesn't draw its list in a background tab, and the tab stayed hidden. So the values below come from the 10:40 run, and Tom can confirm them by opening the task.
+**Method, and a rule it didn't meet.** This run happened before the standing exception in `CLAUDE.md` was written. It used **screenshots** and the page's accessibility tree to find controls and read the task back, so other tasks were on screen in those screenshots. None of them is recorded here or anywhere else. The exception as first written forbade screenshots. Tom allowed them for this test later on 29 Sep 2026 (see `CLAUDE.md`). A no-screenshot re-read at about 12:20 couldn't see the task: Google Tasks doesn't draw its list in a background tab, and the tab stayed hidden. So the values below come from the 10:40 run, and Tom can confirm them by opening the task.
 
 No task with this exact title existed before the run. One task was created.
 
