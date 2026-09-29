@@ -166,8 +166,17 @@ const cmds = {
   control() {
     let p = find('popup');
     if (!p) {
-      const w = Chrome.Window().make();
-      Chrome.windows[0].activeTab.url = EXT + 'popup.html';
+      // Right after make(), Chrome.windows[0] can still be the old front window
+      // (run 2: the popup page replaced the Doc), so find the new window by id.
+      const before = new Set(Chrome.windows().map((w) => w.id()));
+      Chrome.Window().make();
+      let w = null;
+      for (let i = 0; i < 30 && !w; i++) {
+        sleep(0.1);
+        w = Chrome.windows().find((x) => !before.has(x.id())) || null;
+      }
+      if (!w) throw new Error('new window did not appear; nothing navigated');
+      w.activeTab.url = EXT + 'popup.html';
       sleep(1);
       p = find('popup');
     }
