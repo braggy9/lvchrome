@@ -13,7 +13,7 @@ This test needs Tom's **signed-in** profile, so `CLAUDE.md` carries a **standing
 - Create only the one synthetic task below.
 - For the duplicate check only, look through task titles to find an exact match for this task's title. Never record, quote or report any other title.
 - Report only what's in the table under *Report back*: this task's own values and status, plus the Google screen and control labels you used.
-- No screenshots. Don't read or print anything else on screen: other tasks, emails, tabs.
+- Screenshots are allowed (Tom, 29 Sep 2026), only of the Tasks tab and only to see and operate it. Don't save, attach or share them, and don't transcribe, record or repeat anything else visible in them: other tasks, emails, tabs.
 - Don't delete anything without asking Tom.
 
 Tom can also run it himself and fill in the report table.
