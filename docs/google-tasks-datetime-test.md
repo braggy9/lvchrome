@@ -6,7 +6,12 @@ This test is separate from the lvchrome extension (`SPEC.md`). It checks whether
 
 ## Who can run this
 
-The agent must be able to drive **Tom's own signed-in Chrome on his Mac**.
+`CLAUDE.md` says Mac tests are run by Tom, not by an agent. That rule was written for the lvchrome extension tests. Tom asked for an agent to run this Google Tasks test (25 Sep 2026), but this brief doesn't settle whether that makes it an exception. So:
+
+- **Tom can run it himself** using the steps below and report back with the table.
+- **An agent may run it only if Tom confirms in that session** that he wants the agent to drive his Chrome for this test. Without that confirmation, prepare the steps and wait for Tom's report.
+
+If an agent runs it, it must be able to drive **Tom's own signed-in Chrome on his Mac**.
 
 - A cloud Claude Code session (Linux container) **cannot**. It has its own headless Chromium, but that browser isn't signed in to Tom's Google account and can't see his Mac, his Chrome profile or his tabs.
 - Which local Claude setups can drive Tom's Chrome is **not verified here**. Confirm it works before starting.
