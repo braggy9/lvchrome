@@ -137,6 +137,11 @@ async function scanAll() {
 
 // ---- Focus -----------------------------------------------------------------
 
+// Windows where lvchrome is opening a core tab itself, so maybeRoute doesn't log
+// that tab as new-tab-no-opener (Mac run 2, finding 3). Keyed by window, not URL,
+// because Chrome may normalise the URL we pass (unverified).
+const selfOpening = new Map();
+
 async function focusCore(key) {
   const config = await getConfig();
   let tab = await resolve(key, config);
@@ -151,7 +156,17 @@ async function focusCore(key) {
     const wins = await chrome.windows.getAll({ windowTypes: ['normal'] });
     const target = wins.filter((w) => w.id !== workWindowId).sort((a, b) => (b.focused ? 1 : 0) - (a.focused ? 1 : 0))[0];
     if (target) {
-      tab = await chrome.tabs.create({ windowId: target.id, url, active: true });
+      selfOpening.set(target.id, (selfOpening.get(target.id) || 0) + 1);
+      try {
+        tab = await chrome.tabs.create({ windowId: target.id, url, active: true });
+      } finally {
+        // Assumed, not verified: onCreated may fire after create() resolves, so hold briefly.
+        setTimeout(() => {
+          const n = (selfOpening.get(target.id) || 1) - 1;
+          if (n > 0) selfOpening.set(target.id, n);
+          else selfOpening.delete(target.id);
+        }, 2000);
+      }
       await chrome.windows.update(target.id, { focused: true });
     } else {
       const w = await chrome.windows.create({ url, type: 'normal', focused: true });
@@ -224,6 +239,7 @@ async function maybeRoute(tab) {
   if (!config.routeLinks) return;
   const s = await getSession();
   if (tab.openerTabId == null) {
+    if (selfOpening.has(tab.windowId)) return; // lvchrome reopening a core tab itself
     // Diagnostic only: a tab with no opener appearing beside a core tab. Could be
     // Cmd+T, or a link Chrome didn't attribute to its tab (unverified on Mac).
     const beside = await Promise.all(Object.values(s.bindings).map(tabExists));
