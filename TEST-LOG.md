@@ -71,6 +71,69 @@ Event log (UTC). Setup, the Go clicks and M14 are omitted; the shortcut presses 
 - **Extension state:** by reading and clicking the extension's own popup and Settings pages. AppleScript JavaScript runs in an isolated world without `chrome.runtime`. Copy diagnostics was read from the clipboard.
 - **No screenshots** were taken by Claude.
 
+---
+
+**Run 2: 2026-09-29**, about 10:04–10:19 AEST. Same Mac, macOS 27.0 · Chrome 154.0.8037.58 · **lvchrome 0.1.1** (Reload on the card; it loads from `~/Code/lvchrome/extension`) · same throwaway profile, work account only · Memory Saver on (`high_efficiency_mode.state: 2`). Only the tests below were run; Tom stopped early, so M5 and M6 are still open. Rows not listed keep their run 1 result.
+
+| ID | Test | Result | Checked by | Notes |
+|---|---|---|---|---|
+| M0 | Extension loads, no red "Errors" button | **pass** | Tom (Reload, card shows 0.1.1), Claude (Errors button) | Read from the `chrome://extensions` page: lvchrome card present, Developer mode on, **no Errors button** on the card. The red text Tom saw was the popup's "not open — Go will open it" rows, not the Errors button. The selector (`#errors-button`) is assumed from Chrome's page structure; the card's `#dev-reload-button` was found the same way, so the naming looks current, but it is not otherwise verified on 154. |
+| M1 | Shortcuts bound | **fail** (manual workaround still holds) | Claude | Unchanged from run 1's manual setup: Option+Shift+1 Gmail, 2 Calendar, 3 Mission Control Doc, 4 Matters Sheet, 0 popup. Read from the profile's registered commands (`Preferences` → `extensions.commands`), not from the `chrome://extensions/shortcuts` page. |
+| M3 | Option+Shift+2 across Spaces | **pass** | Tom (how), Claude (which tab) | Core window on Desktop 2, Option+Shift+2 pressed from the control window on Desktop 1: Tom saw the screen **jump across to Desktop 2**. Log: `shortcut calendar` → `focused calendar (live)`. Calendar was the active tab in the core window, and no core tab reloaded. With run 1, all four shortcuts now pass M3. |
+| M5 | Memory Saver, 30+ min idle | untested | | Not run (time). |
+| M6 | Sleep/wake | untested | | Not run (time). |
+| M7 | Open email survives switch away + Option+Shift+1 | **pass** | Tom (opened the email), Claude | From the control window, Option+Shift+1 focused Gmail (`shortcut gmail` → `focused gmail (live)`), no reload. An open message was on the page before and after (true/false DOM check), and the Gmail address was identical before and after (compared as a fingerprint, never printed). The helper's own label said "list": see finding 4. |
+| M9 | Close Calendar, Option+Shift+2 reopens it | **pass** | Claude | Exactly **one** Calendar tab reopened, in the core window, with one `shortcut calendar` and one `opened calendar`. Run 1's doubled tab did not recur. Gmail, Sheet and Doc did not reload. Also seen: the Doc, closed by a test-helper mishap (finding 1), was reopened in the core window by Option+Shift+3. |
+| M11 | Link in an email opens in the work window | **pass** (one link) | Tom (clicked), Claude (log, windows) | `work-window-created` + `routed gmail`. The new tab was in a separate work window. Gmail didn't reload or move. No half-typed draft this run, so the M13 part wasn't retested. |
+| M12 | Links from Calendar, Sheet, Doc go to the same work window | **Sheet pass; Calendar not routed (Habitat link); Doc untested** | Tom (clicked), Claude (log, windows) | Sheet: `routed matters`, into the same work window as M11. Calendar: Tom clicked a link **to Habitat**. lvchrome logged nothing (not `routed`, `not-routed` or `new-tab-no-opener`) and no new tab appeared in any Chrome window the helper could see. Where the link went, if anywhere, wasn't checked; a force-installed work extension (e.g. Habitat Connect) handling it is a guess, not verified. Leaving Habitat links alone fits the spec. Doc: not clicked (Tom's call, time). |
+| M14 | Same-tab navigation away → "!" and Restore | **partial** (incidental) | Claude | Not run as a test. The test helper navigated the Doc tab to the popup page (finding 1): lvchrome logged `drifted mission` and the popup showed "navigated away → Restore, Go". Restore was sent (`restored mission`), but the popup page was running in that same tab and closed it (finding 2). Badge not checked (no screenshots). |
+| M15 | Core tabs stay in their window | **pass** | Claude | Across M9, M11, M12 and M7, all four core tabs stayed in the core window. Routed tabs went only to the work window. Every no-reload check passed, and the Sheet's scroll offset was unchanged (it was at 0, so this says little about scroll). |
+
+### Findings (run 2)
+
+1. **Test-helper bug, fixed:** `lv.sh control` made a new window, then set the URL of `Chrome.windows[0]`'s active tab, which was still the **old** front window. The Doc tab became the popup page. `tests/mac/lv.js` now finds the new window by id and navigates nothing if it doesn't appear.
+2. **The popup closes itself after Go or Restore** (`popup.js` calls `window.close()`). In a real popup that's right. When the popup page runs in a tab, as the helpers use it, the tab closes too. So `lv.sh go` and `lv.sh restore` close the control tab (run `lv.sh control` again), and Restore on a tab that *is* the popup page closes that tab.
+3. **Log noise:** when lvchrome opens a core tab itself (Go, or a shortcut for a missing tab), 0.1.1 also logs `new-tab-no-opener (in a core-tab window)`. That was 5 of 30 entries this run.
+4. **The helper's Gmail view label is unreliable.** An open email whose address had the form `#inbox?…` was labelled "list", because `lv.js` only recognises a message by an ID at the end of the hash. Run 1's M7 note ("inbox with compose open") may be the same misreading.
+5. **Tabs weren't restored** when the throwaway Chrome started. Tom reopened the four core tabs with the popup's Go (the `opened` entries at 00:05).
+
+### Diagnostics excerpt (run 2, no URLs)
+
+Row states at the end: all four `live`, none in the work window, all `autoDiscardable: false`; `hasWorkWindow: true`. Event log (UTC):
+
+```
+00:05:45 bound/opened gmail            ← Tom reopens the four core tabs via Go
+00:05:47 bound/opened calendar           (each also logs new-tab-no-opener: finding 3)
+00:05:54 bound/opened matters
+00:05:57 bound/opened mission
+00:08:11 drifted mission               ← helper bug put the popup page in the Doc tab (finding 1)
+00:08:51 restored mission
+00:08:51 core-tab-closed mission       ← popup page closed its own tab (finding 2)
+00:09:32 shortcut mission              ← Option+Shift+3 from the core window
+00:09:32 bound/opened mission
+00:10:34 core-tab-closed calendar      ← M9
+00:10:36 shortcut calendar
+00:10:36 bound/opened calendar           one tab, one "opened"
+00:12:04 work-window-created           ← M11 email link
+00:12:04 routed gmail
+00:12:24 routed matters                ← M12 Sheet link (Calendar → Habitat link: nothing logged)
+00:14:21 shortcut gmail                ← M7
+00:14:21 focused gmail (live)
+00:14:52 shortcut gmail                ← M7 repeated with the open-message check
+00:14:52 focused gmail (live)
+00:18:35 shortcut calendar             ← M3, from Desktop 1 (core window on Desktop 2)
+00:18:36 focused calendar (live)
+```
+
+### Method (run 2)
+
+As run 1, plus:
+
+- **Errors button (M0):** Apple Events JavaScript on the `chrome://extensions` tab, returning only whether the lvchrome card, its reload button and an Errors button exist.
+- **Shortcuts:** read from the throwaway profile's `Preferences` file (command names and keys only).
+- **M7:** a true/false check for an open message on the Gmail page, and an FNV-1a fingerprint of the Gmail address compared before and after the shortcut. The address itself was never printed.
+- **Diagnostics** were read after each step with `lv.sh diag` and filtered by time. No screenshots.
+
 ## Automated (macOS)
 
 **untested.** Node isn't installed on this work Mac, and Tom chose not to install it (no `npm test`, no `npm run e2e:mac`). An attempt to run the unit tests under macOS's built-in JavaScriptCore was dropped: it has no `URL` API, so 5 of 7 tests failed for reasons unrelated to lvchrome. JavaScriptCore was used only to syntax-check the 0.1.1 changes.

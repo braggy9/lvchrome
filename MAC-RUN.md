@@ -26,4 +26,18 @@ I think these need a person, but a local session should try first:
 - **One Chrome at a time.** AppleScript can't tell two running Chromes apart, so the normal Chrome is quit and `tests/mac/launch.sh` starts a throwaway one. `guard.sh` makes every helper refuse to run otherwise. The debug port and `--load-extension` were avoided because security tools may flag them.
 - **By hand:** Load unpacked, Google sign-in (decline sync), setting the shortcuts (M1), Accessibility for Claude (System Settings → Privacy & Security → Accessibility), moving the window to another desktop (M3), and opening an email (M7).
 - **Signing in with the work account** makes Workspace force-install its extensions into the profile, and Chrome syncs the account's own extensions too, even with sync declined.
-- **Resuming:** Cmd+Q the normal Chrome, run `tests/mac/launch.sh`, then `tests/mac/lv.sh state`. Load the updated `extension/` by pressing **Reload** on the lvchrome card in `chrome://extensions`. Still to do: M5 (30 min idle), M6 (sleep 10+ min), M7, M11/M12 re-clicks on 0.1.1, the red "Errors" button check for M0, and Option+Shift+2 across Spaces for M3.
+- **Resuming:** Cmd+Q the normal Chrome, run `tests/mac/launch.sh`, then `tests/mac/lv.sh state`. Load the updated `extension/` by pressing **Reload** on the lvchrome card in `chrome://extensions`.
+
+## What run 2 learned (2026-09-29, 0.1.1)
+
+- Done: M0 Errors button (none), M3 Option+Shift+2 across Spaces (pass), M7 (pass), M9 (pass, no doubled tab), M11 (pass, one link), M12 Sheet (pass). Details in `TEST-LOG.md` → Run 2.
+- The throwaway profile doesn't restore tabs on launch. Reopen the four core tabs with the popup's **Go**.
+- `lv.sh go` and `lv.sh restore` close the control tab afterwards (the popup's `window.close()`). Run `lv.sh control` again before the next `diag` or `status`.
+- **Still to do:**
+  - M5: 30+ min idle with Memory Saver on (it is on in the throwaway profile)
+  - M6: sleep 10+ min, then wake
+  - M12: a Doc link, and a Calendar link to something other than Habitat
+  - M13: a half-typed draft through the M11/M12 clicks
+  - M14: the "!" badge, which needs lvchrome pinned and Tom to look
+  - Helper: `lv.js` labels an open email as "list" when Gmail's address is `#inbox?…` (run 2 finding 4)
+  - Extension: it logs its own reopened tabs as `new-tab-no-opener` (run 2 finding 3)
