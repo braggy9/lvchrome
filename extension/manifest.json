@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "lvchrome — core work tabs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Return to four core work tabs without reloading them, and route links opened from them to a separate work window.",
   "permissions": ["tabs", "storage"],
   "background": { "service_worker": "background.js", "type": "module" },
