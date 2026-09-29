@@ -140,7 +140,7 @@ As run 1, plus:
 
 ## Automated results (Linux Chromium, fake pages)
 
-Last run: 2026-09-28, lvchrome 0.1.1, Playwright 1.56.1 bundled Chromium. **19 passed, 0 failed, 1 untested.**
+Last run: 2026-09-29, lvchrome 0.1.2, Playwright 1.56.1 bundled Chromium. **19 passed, 0 failed, 1 untested.** No result changed from 0.1.1; the new-tab-no-opener change broke nothing in e2e (the e2e fake pages don't exercise lvchrome's own reopened-tab log path, so this is not evidence the fix works).
 
 | ID | Check | Result |
 |---|---|---|
