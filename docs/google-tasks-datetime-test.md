@@ -8,11 +8,14 @@ This test is separate from the lvchrome extension (`SPEC.md`). It checks whether
 
 `CLAUDE.md` (as of 28 Sep 2026) allows Mac results from Tom by hand, or from a Claude Code session running on the Mac at Tom's request. It also says Mac scripts drive **only a throwaway Chrome profile** (via `tests/mac/guard.sh`), take no screenshots, and never print URLs, titles or page content.
 
-This test doesn't fit that second rule as written. It needs Tom's **signed-in** profile, and it reads back a title and URL (synthetic ones, but still). Those rules were written for the lvchrome extension tests, and this brief doesn't decide whether they cover this one. So:
+This test needs Tom's **signed-in** profile, so `CLAUDE.md` carries a **standing exception** for it (Tom, 29 Sep 2026). A Claude Code session on the Mac may drive his signed-in Chrome for this test without `tests/mac/guard.sh`, but only within these limits:
 
-- **Tom can run it himself** using the steps below and report back with the table.
-- **An agent may run it only if Tom confirms in that session** that he wants the agent to drive his signed-in Chrome for this test and read back the synthetic values. Without that confirmation, prepare the steps and wait for Tom's report.
-- This test can't go through the repo's Mac scripts. `tests/mac/guard.sh` stops unless the throwaway profile is the only Chrome running, so that no script ever acts on the live profile, and Google Tasks needs the signed-in account.
+- Create only the one synthetic task below.
+- Report only that task's own values: title, date, time, list and details URL.
+- No screenshots. Don't read or print anything else on screen: other tasks, emails, tabs.
+- Don't delete anything without asking Tom.
+
+Tom can also run it himself and fill in the report table.
 
 If an agent runs it, it must be able to drive **Tom's own signed-in Chrome on his Mac**.
 
