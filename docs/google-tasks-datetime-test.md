@@ -11,7 +11,8 @@ This test is separate from the lvchrome extension (`SPEC.md`). It checks whether
 This test needs Tom's **signed-in** profile, so `CLAUDE.md` carries a **standing exception** for it (Tom, 29 Sep 2026). A Claude Code session on the Mac may drive his signed-in Chrome for this test without `tests/mac/guard.sh`, but only within these limits:
 
 - Create only the one synthetic task below.
-- Report only that task's own values: title, date, time, list and details URL.
+- For the duplicate check only, look through task titles to find an exact match for this task's title. Never record, quote or report any other title.
+- Report only what's in the table under *Report back*: this task's own values and status, plus the Google screen and control labels you used.
 - No screenshots. Don't read or print anything else on screen: other tasks, emails, tabs.
 - Don't delete anything without asking Tom.
 
@@ -41,7 +42,9 @@ If an agent runs it, it must be able to drive **Tom's own signed-in Chrome on hi
 ## Steps
 
 1. Open Google Tasks in Tom's signed-in Chrome. Record which screen you used: the Tasks side panel in Gmail or Calendar, or the standalone Tasks page.
-2. **Duplicate check first:** search or scan the lists for an existing `TEST Slack capture` task. If one exists, don't create another. Report it instead.
+2. **Duplicate check first:** look for a task titled exactly `TEST Slack capture — 3 Oct`, due 3 Oct 2026. If one exists, don't create another. Report it instead. Only an exact title match counts:
+   - An older `TEST Slack capture — 26 Sep` task doesn't count. Leave it alone, note that it exists, and carry on.
+   - Don't record any other task you pass over.
 3. Create **one** task with the values above. Set the date and time with the task's own date/time control, not by typing them into the title.
 4. Put the URL in the details/description field.
 5. Save, then refresh the page.
@@ -59,7 +62,8 @@ If an agent runs it, it must be able to drive **Tom's own signed-in Chrome on hi
 | Time after refresh (and any time-zone label) | |
 | List | |
 | URL in details (present? clickable? exact text?) | |
-| Anything unexpected (time shifted, overdue flag, repeat, etc.) | |
+| Anything unexpected on this task (time shifted, overdue flag, repeat, etc.) | |
+| Older 26 Sep test task present? (yes/no only) | |
 
 ## Rules
 
